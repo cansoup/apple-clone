@@ -10,7 +10,14 @@
       heightNum: 5,
       scrollHeight: 0,
       objs: {
-        container: document.querySelector('#scroll-section-0')
+        container: document.querySelector('#scroll-section-0'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+        messageB: document.querySelector('#scroll-section-0 .main-message.b'),
+        messageC: document.querySelector('#scroll-section-0 .main-message.c'),
+        messageD: document.querySelector('#scroll-section-0 .main-message.d'),
+      },
+      values: {
+        messageA_opacity: [0, 1]
       }
     },
     { 
@@ -45,28 +52,64 @@
       sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * innerHeight;
       sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
+
+    // 새로고침 시 씬 넘버 유지
+    yOffset = window.scrollY;
+    let totalScrollHeight = 0;
+    for(let i = 0; i < sceneInfo.length; i++) {
+      totalScrollHeight += sceneInfo[i].scrollHeight;
+      if(totalScrollHeight >= yOffset) {
+        currentScene = i;
+        break;
+      }
+    }
+    document.body.setAttribute('id', `show-scene-${currentScene}`);
+
+  }
+  
+  function playAnimation() {
+    switch(currentScene) {
+      case 0:
+        break;
+
+      case 1:
+        break;
+      
+      case 2:
+        break;
+      
+      case 3:
+        break;
+    }
   }
 
   function scrollLoop() {
+    prevScrollHeight = 0;
     for( let i = 0; i < currentScene; i++) {
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
     if( yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight ) {
       currentScene++;
+      document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
     if( yOffset < prevScrollHeight ) {
-      if(currentScene === 0) return;
+      if(currentScene === 0) return; // 브라우저 바운스 효과로 인해 마이너스가 되는 것을 방지(모바일)
       currentScene--;
+      document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
+
+    playAnimation();
   }
   
-  window.addEventListener('resize', setLayout());
   window.addEventListener('scroll', () => {
     yOffset = window.scrollY;
     scrollLoop();
   });
   
-  setLayout();
+  // window.addEventListener('DOMContentLoaded', setLayout()); // DOM구조 로드 완료 시 실행, 빠르다
+  window.addEventListener('load', setLayout()); // 이미지를 포함한 모든 리소스 로드 완료 시 실행
+  window.addEventListener('resize', setLayout());
+
 })();
