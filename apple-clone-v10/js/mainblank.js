@@ -67,11 +67,28 @@
 
   }
   
+  function calcValues(values, currentYOffset) {
+    // 헌재 섹션에서 스크롤된 비율, 스크롤이 아예 안됐을 때 : 0, 스크롤이 섹션 마지막에 닿았을 때: 1
+    let returnValue;
+    // 현재 씬(스크롤섹션)에서 스크롤된 범위를 비율로 구하기
+    let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+
+    // 다음과 같이 계산하는 이유: 범위가 항상 0 ~ 1이라는 보장이 없으므로, 가변적인 상황을 대비하여 다음과 같이 계산한다.
+    returnValue = scrollRatio * (values[1] - values[0]) + values[0];
+    return returnValue;
+  }
+
   function playAnimation() {
+    const objs = sceneInfo[currentScene].objs;
+    const values = sceneInfo[currentScene].values;
+    const currentYOffset = yOffset - prevScrollHeight;
+
     switch(currentScene) {
       case 0:
+        let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
+        objs.messageA.style.opacity = messageA_opacity_in;
+        console.log(messageA_opacity_in);
         break;
-
       case 1:
         break;
       
